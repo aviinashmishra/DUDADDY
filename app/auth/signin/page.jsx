@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 
 export default function SignIn() {
@@ -10,21 +11,59 @@ export default function SignIn() {
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [password, setPassword] = useState('')
-  const [step, setStep] = useState('email') // 'email', 'otp', or 'admin'
+  const [loginType, setLoginType] = useState('password') // 'password' or 'otp'
+  const [step, setStep] = useState('login') // 'login', 'otp', or 'admin'
   const [loading, setLoading] = useState(false)
   const [isAdminLogin, setIsAdminLogin] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handlePasswordLogin = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        loginType: 'password',
+        redirect: false,
+      })
+
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Signed in successfully!')
+        router.push('/')
+        router.refresh()
+      }
+    } catch (error) {
+      toast.error('Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true)
+    try {
+      const result = await signIn('google', {
+        redirect: false,
+        callbackUrl: '/',
+      })
+      
+      if (result?.error) {
+        toast.error('Google sign in failed')
+      }
+    } catch (error) {
+      toast.error('Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSendOTP = async (e) => {
     e.preventDefault()
     setLoading(true)
-
-    // Check if this is admin email
-    if (email === 'dudaddyworld@gmail.com') {
-      setIsAdminLogin(true)
-      setStep('admin')
-      setLoading(false)
-      return
-    }
 
     try {
       const response = await fetch('/api/auth/send-otp', {
@@ -56,6 +95,7 @@ export default function SignIn() {
       const result = await signIn('credentials', {
         email,
         otp,
+        loginType: 'otp',
         redirect: false,
       })
 
@@ -73,29 +113,14 @@ export default function SignIn() {
     }
   }
 
-  const handleAdminLogin = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        toast.error(result.error)
-      } else {
-        toast.success('Admin signed in successfully!')
-        router.push('/admin')
-        router.refresh()
-      }
-    } catch (error) {
-      toast.error('Something went wrong')
-    } finally {
-      setLoading(false)
+  const switchToOTPLogin = () => {
+    if (email === 'dudaddyworld@gmail.com') {
+      setIsAdminLogin(true)
+      setStep('admin')
+      return
     }
+    setLoginType('otp')
+    handleSendOTP({ preventDefault: () => {} })
   }
 
   return (

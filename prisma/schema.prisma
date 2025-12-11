@@ -16,6 +16,7 @@ model User {
     email         String    @unique
     emailVerified DateTime?
     image         String?
+    password      String?   // For password-based authentication
     cart          Json      @default("{}")
     role          String    @default("user")
     createdAt     DateTime  @default(now())
@@ -28,6 +29,21 @@ model User {
     buyerOrders Order[]   @relation("BuyerRelation")
     accounts    Account[]
     sessions    Session[]
+    passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+    id        String   @id @default(cuid())
+    userId    String
+    token     String   @unique
+    expiresAt DateTime
+    used      Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([token])
+    @@index([userId])
 }
 
 model Account {

@@ -24,12 +24,14 @@ export default function Product() {
     }, [productId,products]);
 
     return (
-        <div className="mx-6">
+        <div className="mx-6 bg-[#0A0E1A]">
             <div className="max-w-7xl mx-auto">
 
                 {/* Breadcrums */}
-                <div className="  text-gray-600 text-sm mt-8 mb-5">
-                    Home / Products / {product?.category}
+                <div className="text-gray-500 text-sm mt-8 mb-8">
+                    <span className="hover:text-[#de2529] transition-colors cursor-pointer">Home</span> / 
+                    <span className="hover:text-[#de2529] transition-colors cursor-pointer"> Products</span> / 
+                    <span className="text-[#de2529]"> {product?.category}</span>
                 </div>
 
                 {/* Product Details */}

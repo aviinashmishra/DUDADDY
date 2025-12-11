@@ -21,12 +21,12 @@ const Footer = () => {
             ]
         },
         {
-            title: "WEBSITE?",
+            title: "QUICK LINKS",
             links: [
                 { text: "Home", path: '/', icon: null },
-                { text: "Privacy Policy", path: '/', icon: null },
-                { text: "Become Plus Member", path: '/pricing', icon: null },
-                { text: "Create Your Store", path: '/create-store', icon: null },
+                { text: "About Us", path: '/about', icon: null },
+                { text: "Contact", path: '/contact', icon: null },
+                { text: "Shop", path: '/shop', icon: null },
             ]
         },
         {
@@ -47,31 +47,57 @@ const Footer = () => {
     ]
 
     return (
-        <footer className="mx-6 bg-white">
+        <footer className="mx-6 bg-[#050810] border-t border-[#1A2332] mt-20">
             <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-slate-500/30 text-slate-500">
+                <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-12 border-b border-[#1A2332] text-gray-400">
                     <div>
-                        <Link href="/" className="text-4xl font-semibold text-slate-700">
-                            <span className="text-green-600">go</span>cart<span className="text-green-600 text-5xl leading-0">.</span>
+                        {/* Du Daddy Logo */}
+                        <Link href="/" className="font-bold text-white group flex items-center gap-2">
+                            <div className="relative">
+                                <svg className="w-12 h-12" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 5 L20 5 L30 10 L30 40 L20 45 L5 45 L5 5 Z" fill="url(#footerLogoGradient)"/>
+                                    <path d="M8 8 L8 42 L18 42 L26 37 L26 13 L18 8 L8 8 Z" fill="#050810"/>
+                                    <rect x="22" y="5" width="3" height="40" fill="#de2529" transform="rotate(25 24 25)"/>
+                                    <defs>
+                                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stopColor="#ffffff" />
+                                            <stop offset="100%" stopColor="#999999" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-3xl leading-none">
+                                    <span className="text-white">Du</span>
+                                    <span className="text-gradient">Daddy</span>
+                                </span>
+                                <span className="text-[8px] text-gray-500 tracking-wider uppercase">Har Gym Ka Daddy</span>
+                            </div>
                         </Link>
-                        <p className="max-w-[410px] mt-6 text-sm">Welcome to gocart, your ultimate destination for the latest and smartest gadgets. From smartphones and smartwatches to essential accessories, we bring you the best in innovation — all in one place.</p>
-                        <div className="flex items-center gap-3 mt-5">
+                        <p className="max-w-[410px] mt-6 text-sm text-gray-400 leading-relaxed">
+                            India's first 100% herbal performance supplement brand. Train Clean. Recover Deep. Grow Natural.
+                        </p>
+                        <div className="flex items-center gap-3 mt-6">
                             {socialIcons.map((item, i) => (
-                                <Link href={item.link} key={i} className="flex items-center justify-center w-10 h-10 bg-slate-100 hover:scale-105 hover:border border-slate-300 transition rounded-full">
+                                <Link 
+                                    href={item.link} 
+                                    key={i} 
+                                    className="flex items-center justify-center w-10 h-10 bg-[#0F1420] hover:bg-gradient-to-r hover:from-[#de2529] hover:to-[#ff3b3f] hover:scale-110 border border-[#1A2332] hover:border-transparent transition-all rounded-full group"
+                                >
                                     <item.icon />
                                 </Link>
                             ))}
                         </div>
                     </div>
-                    <div className="flex flex-wrap justify-between w-full md:w-[45%] gap-5 text-sm ">
+                    <div className="flex flex-wrap justify-between w-full md:w-[45%] gap-8 text-sm">
                         {linkSections.map((section, index) => (
                             <div key={index}>
-                                <h3 className="font-medium text-slate-700 md:mb-5 mb-3">{section.title}</h3>
-                                <ul className="space-y-2.5">
+                                <h3 className="font-bold text-white md:mb-5 mb-3 text-sm tracking-wider">{section.title}</h3>
+                                <ul className="space-y-3">
                                     {section.links.map((link, i) => (
                                         <li key={i} className="flex items-center gap-2">
                                             {link.icon && <link.icon />}
-                                            <Link href={link.path} className="hover:underline transition">{link.text}</Link>
+                                            <Link href={link.path} className="hover:text-[#de2529] transition-colors">{link.text}</Link>
                                         </li>
                                     ))}
                                 </ul>
@@ -79,9 +105,15 @@ const Footer = () => {
                         ))}
                     </div>
                 </div>
-                <p className="py-4 text-sm text-slate-500">
-                    Copyright 2025 © gocart All Right Reserved.
-                </p>
+                <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-sm text-gray-500">
+                        Copyright 2025 © Du Daddy. All Rights Reserved.
+                    </p>
+                    <div className="flex items-center gap-6 text-sm text-gray-500">
+                        <Link href="/" className="hover:text-[#de2529] transition-colors">Privacy Policy</Link>
+                        <Link href="/" className="hover:text-[#de2529] transition-colors">Terms of Service</Link>
+                    </div>
+                </div>
             </div>
         </footer>
     );

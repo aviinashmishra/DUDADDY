@@ -12,11 +12,11 @@ const OurSpecs = () => {
                 {
                     ourSpecsData.map((spec, index) => {
                         return (
-                            <div className='relative h-44 px-8 flex flex-col items-center justify-center w-full text-center border rounded-lg group' style={{ backgroundColor: spec.accent + 10, borderColor: spec.accent + 30 }} key={index}>
-                                <h3 className='text-slate-800 font-medium'>{spec.title}</h3>
-                                <p className='text-sm text-slate-600 mt-3'>{spec.description}</p>
-                                <div className='absolute -top-5 text-white size-10 flex items-center justify-center rounded-md group-hover:scale-105 transition' style={{ backgroundColor: spec.accent }}>
-                                    <spec.icon size={20} />
+                            <div className='relative h-44 px-8 flex flex-col items-center justify-center w-full text-center border border-[#1A2332] rounded-xl group bg-[#0F1420] hover:border-[#de2529]/50 transition-all cursor-pointer' key={index}>
+                                <h3 className='text-white font-semibold text-lg'>{spec.title}</h3>
+                                <p className='text-sm text-gray-400 mt-3 leading-relaxed'>{spec.description}</p>
+                                <div className='absolute -top-5 text-white size-12 flex items-center justify-center rounded-xl group-hover:scale-110 transition-transform shadow-lg' style={{ background: `linear-gradient(135deg, ${spec.accent}, #ff3b3f)` }}>
+                                    <spec.icon size={22} />
                                 </div>
                             </div>
                         )

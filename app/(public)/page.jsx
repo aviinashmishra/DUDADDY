@@ -1,17 +1,21 @@
 'use client'
-import BestSelling from "@/components/BestSelling";
-import Hero from "@/components/Hero";
+import AyurvedicHero from "@/components/AyurvedicHero";
+import AyurvedicIngredients from "@/components/AyurvedicIngredients";
+import AyurvedicBenefits from "@/components/AyurvedicBenefits";
+import AyurvedicTestimonials from "@/components/AyurvedicTestimonials";
+import AyurvedicScience from "@/components/AyurvedicScience";
+import AyurvedicProducts from "@/components/AyurvedicProducts";
 import Newsletter from "@/components/Newsletter";
-import OurSpecs from "@/components/OurSpec";
-import LatestProducts from "@/components/LatestProducts";
 
 export default function Home() {
     return (
-        <div>
-            <Hero />
-            <LatestProducts />
-            <BestSelling />
-            <OurSpecs />
+        <div className="bg-[#0A0E1A]">
+            <AyurvedicHero />
+            <AyurvedicIngredients />
+            <AyurvedicBenefits />
+            <AyurvedicScience />
+            <AyurvedicProducts />
+            <AyurvedicTestimonials />
             <Newsletter />
         </div>
     );

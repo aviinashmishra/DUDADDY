@@ -31,49 +31,49 @@ const ProductDetails = ({ product }) => {
             <div className="flex max-sm:flex-col-reverse gap-3">
                 <div className="flex sm:flex-col gap-3">
                     {product.images.map((image, index) => (
-                        <div key={index} onClick={() => setMainImage(product.images[index])} className="bg-slate-100 flex items-center justify-center size-26 rounded-lg group cursor-pointer">
-                            <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt="" width={45} height={45} />
+                        <div key={index} onClick={() => setMainImage(product.images[index])} className="bg-[#0F1420] border border-[#1A2332] hover:border-[#de2529]/50 flex items-center justify-center size-26 rounded-xl group cursor-pointer transition-all">
+                            <Image src={image} className="group-hover:scale-110 group-active:scale-95 transition-transform" alt="" width={45} height={45} />
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-center items-center h-100 sm:size-113 bg-slate-100 rounded-lg ">
+                <div className="flex justify-center items-center h-100 sm:size-113 bg-[#0F1420] border border-[#1A2332] rounded-xl">
                     <Image src={mainImage} alt="" width={250} height={250} />
                 </div>
             </div>
             <div className="flex-1">
-                <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
-                <div className='flex items-center mt-2'>
+                <h1 className="text-4xl font-bold text-gradient">{product.name}</h1>
+                <div className='flex items-center mt-3'>
                     {Array(5).fill('').map((_, index) => (
-                        <StarIcon key={index} size={14} className='text-transparent mt-0.5' fill={averageRating >= index + 1 ? "#00C950" : "#D1D5DB"} />
+                        <StarIcon key={index} size={16} className='text-transparent' fill={averageRating >= index + 1 ? "#de2529" : "#1A2332"} />
                     ))}
-                    <p className="text-sm ml-3 text-slate-500">{product.rating.length} Reviews</p>
+                    <p className="text-sm ml-3 text-gray-400">{product.rating.length} Reviews</p>
                 </div>
-                <div className="flex items-start my-6 gap-3 text-2xl font-semibold text-slate-800">
-                    <p> {currency}{product.price} </p>
-                    <p className="text-xl text-slate-500 line-through">{currency}{product.mrp}</p>
+                <div className="flex items-start my-6 gap-3 text-3xl font-bold">
+                    <p className="text-[#de2529]"> {currency}{product.price} </p>
+                    <p className="text-xl text-gray-500 line-through">{currency}{product.mrp}</p>
                 </div>
-                <div className="flex items-center gap-2 text-slate-500">
-                    <TagIcon size={14} />
-                    <p>Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}% right now</p>
+                <div className="flex items-center gap-2 text-[#00D9FF] bg-[#00D9FF]/10 px-4 py-2 rounded-lg border border-[#00D9FF]/30 w-fit">
+                    <TagIcon size={16} />
+                    <p className="font-semibold">Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}% right now</p>
                 </div>
                 <div className="flex items-end gap-5 mt-10">
                     {
                         cart[productId] && (
                             <div className="flex flex-col gap-3">
-                                <p className="text-lg text-slate-800 font-semibold">Quantity</p>
+                                <p className="text-lg text-white font-semibold">Quantity</p>
                                 <Counter productId={productId} />
                             </div>
                         )
                     }
-                    <button onClick={() => !cart[productId] ? addToCartHandler() : router.push('/cart')} className="bg-slate-800 text-white px-10 py-3 text-sm font-medium rounded hover:bg-slate-900 active:scale-95 transition">
+                    <button onClick={() => !cart[productId] ? addToCartHandler() : router.push('/cart')} className="btn-primary">
                         {!cart[productId] ? 'Add to Cart' : 'View Cart'}
                     </button>
                 </div>
-                <hr className="border-gray-300 my-5" />
-                <div className="flex flex-col gap-4 text-slate-500">
-                    <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Free shipping worldwide </p>
-                    <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> 100% Secured Payment </p>
-                    <p className="flex gap-3"> <UserIcon className="text-slate-400" /> Trusted by top brands </p>
+                <hr className="border-[#1A2332] my-6" />
+                <div className="flex flex-col gap-4 text-gray-300">
+                    <p className="flex gap-3 items-center"> <EarthIcon className="text-[#de2529]" size={20} /> Free shipping worldwide </p>
+                    <p className="flex gap-3 items-center"> <CreditCardIcon className="text-[#de2529]" size={20} /> 100% Secured Payment </p>
+                    <p className="flex gap-3 items-center"> <UserIcon className="text-[#de2529]" size={20} /> Trusted by top brands </p>
                 </div>
 
             </div>

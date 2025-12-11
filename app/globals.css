@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+:root {
+    /* Du Daddy red color palette */
+    --color-primary: #de2529;
+    --color-primary-dark: #b81e21;
+    --color-secondary: #ff3b3f;
+    --color-accent: #de2529;
+    --color-bg-dark: #0A0E1A;
+    --color-bg-darker: #050810;
+    --color-bg-card: #0F1420;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #A0AEC0;
+    --color-border: #1A2332;
+}
+
 @layer components {
     @keyframes marqueeScroll {
         0% {
@@ -9,14 +23,79 @@
             transform: translateX(-50%);
         }
     }
+
+    @keyframes glow {
+        0%, 100% {
+            box-shadow: 0 0 20px rgba(222, 37, 41, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 40px rgba(222, 37, 41, 0.6);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .btn-primary {
+        @apply bg-gradient-to-r from-[#de2529] to-[#ff3b3f] text-white font-semibold px-8 py-3 rounded-lg hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 active:scale-95;
+    }
+
+    .btn-secondary {
+        @apply bg-transparent border-2 border-[#de2529] text-[#de2529] font-semibold px-8 py-3 rounded-lg hover:bg-[#de2529] hover:text-white transition-all duration-300;
+    }
+
+    .card-dark {
+        @apply bg-[#0F1420] border border-[#1A2332] rounded-xl p-6 hover:border-[#de2529]/50 transition-all duration-300;
+    }
+
+    .text-gradient {
+        @apply bg-gradient-to-r from-white via-[#ff3b3f] to-[#de2529] bg-clip-text text-transparent;
+    }
+
+    .glow-effect {
+        animation: glow 3s ease-in-out infinite;
+    }
 }
 
 @layer base {
+    body {
+        @apply bg-[#0A0E1A] text-white;
+    }
+
     button {
         cursor: pointer;
+    }
+
+    * {
+        @apply transition-colors duration-200;
     }
 }
 
 .no-scrollbar::-webkit-scrollbar {
     display: none;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0F1420;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #de2529;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff3b3f;
 }

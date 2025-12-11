@@ -47,43 +47,43 @@ export default function Cart() {
     }, [cartItems, products]);
 
     return cartArray.length > 0 ? (
-        <div className="min-h-screen mx-6 text-slate-800">
+        <div className="min-h-screen mx-6 text-white">
 
-            <div className="max-w-7xl mx-auto ">
+            <div className="max-w-7xl mx-auto">
                 {/* Title */}
                 <PageTitle heading="My Cart" text="items in your cart" linkText="Add more" />
 
                 <div className="flex items-start justify-between gap-5 max-lg:flex-col">
 
-                    <table className="w-full max-w-4xl text-slate-600 table-auto">
+                    <table className="w-full max-w-4xl text-gray-300 table-auto">
                         <thead>
-                            <tr className="max-sm:text-sm">
-                                <th className="text-left">Product</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                                <th className="max-md:hidden">Remove</th>
+                            <tr className="max-sm:text-sm border-b border-[#1A2332]">
+                                <th className="text-left pb-4 text-white">Product</th>
+                                <th className="pb-4 text-white">Quantity</th>
+                                <th className="pb-4 text-white">Total Price</th>
+                                <th className="max-md:hidden pb-4 text-white">Remove</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 cartArray.map((item, index) => (
-                                    <tr key={index} className="space-x-2">
+                                    <tr key={index} className="space-x-2 border-b border-[#1A2332]">
                                         <td className="flex gap-3 my-4">
-                                            <div className="flex gap-3 items-center justify-center bg-slate-100 size-18 rounded-md">
+                                            <div className="flex gap-3 items-center justify-center bg-[#0F1420] border border-[#1A2332] size-18 rounded-lg">
                                                 <Image src={item.images[0]} className="h-14 w-auto" alt="" width={45} height={45} />
                                             </div>
                                             <div>
-                                                <p className="max-sm:text-sm">{item.name}</p>
-                                                <p className="text-xs text-slate-500">{item.category}</p>
-                                                <p>{currency}{item.price}</p>
+                                                <p className="max-sm:text-sm font-medium text-white">{item.name}</p>
+                                                <p className="text-xs text-gray-500">{item.category}</p>
+                                                <p className="text-[#de2529] font-semibold">{currency}{item.price}</p>
                                             </div>
                                         </td>
                                         <td className="text-center">
                                             <Counter productId={item.id} />
                                         </td>
-                                        <td className="text-center">{currency}{(item.price * item.quantity).toLocaleString()}</td>
+                                        <td className="text-center font-semibold">{currency}{(item.price * item.quantity).toLocaleString()}</td>
                                         <td className="text-center max-md:hidden">
-                                            <button onClick={() => handleDeleteItemFromCart(item.id)} className=" text-red-500 hover:bg-red-50 p-2.5 rounded-full active:scale-95 transition-all">
+                                            <button onClick={() => handleDeleteItemFromCart(item.id)} className="text-[#de2529] hover:bg-[#de2529]/10 p-2.5 rounded-full active:scale-95 transition-all">
                                                 <Trash2Icon size={18} />
                                             </button>
                                         </td>
@@ -97,8 +97,11 @@ export default function Cart() {
             </div>
         </div>
     ) : (
-        <div className="min-h-[80vh] mx-6 flex items-center justify-center text-slate-400">
-            <h1 className="text-2xl sm:text-4xl font-semibold">Your cart is empty</h1>
+        <div className="min-h-[80vh] mx-6 flex items-center justify-center">
+            <div className="text-center">
+                <h1 className="text-3xl sm:text-5xl font-bold text-gradient">Your cart is empty</h1>
+                <p className="text-gray-400 mt-4">Add some products to get started!</p>
+            </div>
         </div>
     )
 }

@@ -21,12 +21,24 @@ import { useSelector } from "react-redux"
         : products;
 
     return (
-        <div className="min-h-[70vh] mx-6">
-            <div className=" max-w-7xl mx-auto">
-                <h1 onClick={() => router.push('/shop')} className="text-2xl text-slate-500 my-6 flex items-center gap-2 cursor-pointer"> {search && <MoveLeftIcon size={20} />}  All <span className="text-slate-700 font-medium">Products</span></h1>
-                <div className="grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-12 mx-auto mb-32">
-                    {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
-                </div>
+        <div className="min-h-[70vh] mx-6 bg-[#0A0E1A]">
+            <div className="max-w-7xl mx-auto">
+                <h1 onClick={() => router.push('/shop')} className="text-3xl text-gray-400 my-8 flex items-center gap-2 cursor-pointer hover:text-[#de2529] transition-colors font-bold"> 
+                    {search && <MoveLeftIcon size={24} />}  
+                    All <span className="text-white">Products</span>
+                </h1>
+                {filteredProducts.length === 0 ? (
+                    <div className="text-center py-20">
+                        <div className="inline-block p-8 bg-[#0F1420] border border-[#1A2332] rounded-2xl">
+                            <p className="text-gray-300 text-xl font-semibold">No products found</p>
+                            <p className="text-gray-500 text-sm mt-2">Check back soon for new products!</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-12 mx-auto mb-32">
+                        {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+                    </div>
+                )}
             </div>
         </div>
     )

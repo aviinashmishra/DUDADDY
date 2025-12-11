@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { prisma } from '@/lib/prisma'
 
 export const authOptions = {
   providers: [
@@ -12,9 +11,17 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        // Check if we're in build environment
+        if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+          throw new Error('Database not available during build')
+        }
+
         if (!credentials?.email) {
           throw new Error('Email is required')
         }
+
+        // Dynamic import to avoid build-time database connection
+        const { prisma } = await import('@/lib/prisma')
 
         // Check if this is admin login with password
         if (credentials.email === 'dudaddyworld@gmail.com' && credentials.password) {

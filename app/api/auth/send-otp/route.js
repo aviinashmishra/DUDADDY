@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { sendOTPEmail } from '@/lib/email'
 import { generateOTP } from '@/lib/auth'
 
 export async function POST(request) {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const { email } = await request.json()
 
     if (!email || !email.includes('@')) {
@@ -17,6 +24,9 @@ export async function POST(request) {
     // Generate OTP
     const otp = generateOTP()
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
 
     // Save OTP to database
     await prisma.oTP.create({

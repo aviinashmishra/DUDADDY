@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 
 export async function POST(request) {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const { email, otp } = await request.json()
 
     if (!email || !otp) {
@@ -11,6 +18,9 @@ export async function POST(request) {
         { status: 400 }
       )
     }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
 
     // Find valid OTP
     const otpRecord = await prisma.oTP.findFirst({

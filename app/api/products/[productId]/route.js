@@ -1,9 +1,19 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 
 export async function GET(request, { params }) {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
+
     const product = await prisma.product.findUnique({
       where: { id: params.productId },
       include: {
@@ -43,6 +53,14 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const user = await getCurrentUser()
 
     if (!user) {
@@ -51,6 +69,9 @@ export async function PUT(request, { params }) {
         { status: 401 }
       )
     }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
 
     const product = await prisma.product.findUnique({
       where: { id: params.productId },
@@ -100,6 +121,14 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const user = await getCurrentUser()
 
     if (!user) {
@@ -108,6 +137,9 @@ export async function DELETE(request, { params }) {
         { status: 401 }
       )
     }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
 
     const product = await prisma.product.findUnique({
       where: { id: params.productId },

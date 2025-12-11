@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 
 export async function GET() {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const user = await getCurrentUser()
 
     if (!user || user.role !== 'admin') {
@@ -12,6 +19,9 @@ export async function GET() {
         { status: 401 }
       )
     }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
 
     const customers = await prisma.user.findMany({
       where: { role: 'user' },

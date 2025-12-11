@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 
 export async function GET(request) {
   try {
+    // Check if we're in build environment
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
+
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const storeId = searchParams.get('storeId')

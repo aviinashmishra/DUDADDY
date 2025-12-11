@@ -12,8 +12,20 @@ const AdminLayout = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     const fetchIsAdmin = async () => {
-        setIsAdmin(true)
-        setLoading(false)
+        try {
+            const response = await fetch('/api/user/profile')
+            if (response.ok) {
+                const userData = await response.json()
+                setIsAdmin(userData.user?.role === 'admin')
+            } else {
+                setIsAdmin(false)
+            }
+        } catch (error) {
+            console.error('Error checking admin status:', error)
+            setIsAdmin(false)
+        } finally {
+            setLoading(false)
+        }
     }
 
     useEffect(() => {

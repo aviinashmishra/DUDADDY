@@ -9,12 +9,22 @@ export default function SignIn() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
-  const [step, setStep] = useState('email') // 'email' or 'otp'
+  const [password, setPassword] = useState('')
+  const [step, setStep] = useState('email') // 'email', 'otp', or 'admin'
   const [loading, setLoading] = useState(false)
+  const [isAdminLogin, setIsAdminLogin] = useState(false)
 
   const handleSendOTP = async (e) => {
     e.preventDefault()
     setLoading(true)
+
+    // Check if this is admin email
+    if (email === 'dudaddyworld@gmail.com') {
+      setIsAdminLogin(true)
+      setStep('admin')
+      setLoading(false)
+      return
+    }
 
     try {
       const response = await fetch('/api/auth/send-otp', {
@@ -54,6 +64,31 @@ export default function SignIn() {
       } else {
         toast.success('Signed in successfully!')
         router.push('/')
+        router.refresh()
+      }
+    } catch (error) {
+      toast.error('Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Admin signed in successfully!')
+        router.push('/admin')
         router.refresh()
       }
     } catch (error) {
@@ -108,6 +143,55 @@ export default function SignIn() {
               {loading ? 'Sending...' : 'Send Verification Code'}
             </button>
           </form>
+        ) : step === 'admin' ? (
+          <form className="mt-8 space-y-6" onSubmit={handleAdminLogin}>
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-2 bg-red-600/20 border border-red-600/30 px-4 py-2 rounded-full">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                <span className="text-sm font-semibold text-red-400">Admin Login</span>
+              </div>
+            </div>
+            
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Admin Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-700 bg-gray-800 placeholder-gray-500 text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                placeholder="Admin Password"
+              />
+            </div>
+
+            <div className="flex flex-col space-y-3">
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Signing in...' : 'Sign in as Admin'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setStep('email')
+                  setPassword('')
+                  setIsAdminLogin(false)
+                  setEmail('')
+                }}
+                className="text-sm text-red-500 hover:text-red-400"
+              >
+                Back to regular login
+              </button>
+            </div>
+          </form>
         ) : (
           <form className="mt-8 space-y-6" onSubmit={handleVerifyOTP}>
             <div>
@@ -141,6 +225,7 @@ export default function SignIn() {
                 onClick={() => {
                   setStep('email')
                   setOtp('')
+                  setEmail('')
                 }}
                 className="text-sm text-red-500 hover:text-red-400"
               >

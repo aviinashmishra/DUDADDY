@@ -9,10 +9,61 @@ export const authOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         otp: { label: 'OTP', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.otp) {
-          throw new Error('Email and OTP are required')
+        if (!credentials?.email) {
+          throw new Error('Email is required')
+        }
+
+        // Check if this is admin login with password
+        if (credentials.email === 'dudaddyworld@gmail.com' && credentials.password) {
+          if (credentials.password === 'Dud@ddy01') {
+            // Find or create admin user
+            let user = await prisma.user.findUnique({
+              where: { email: credentials.email },
+            })
+
+            if (!user) {
+              // Create admin user
+              const adminId = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+              user = await prisma.user.create({
+                data: {
+                  id: adminId,
+                  email: credentials.email,
+                  name: 'Du Daddy Admin',
+                  role: 'admin',
+                  image: 'https://ui-avatars.com/api/?name=Du+Daddy+Admin&background=de2529&color=ffffff',
+                  emailVerified: new Date(),
+                },
+              })
+            } else if (user.role !== 'admin') {
+              // Update user to admin
+              user = await prisma.user.update({
+                where: { id: user.id },
+                data: { 
+                  role: 'admin',
+                  name: 'Du Daddy Admin',
+                  emailVerified: new Date(),
+                },
+              })
+            }
+
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              role: user.role,
+            }
+          } else {
+            throw new Error('Invalid admin password')
+          }
+        }
+
+        // Regular OTP-based login for other users
+        if (!credentials?.otp) {
+          throw new Error('OTP is required for regular users')
         }
 
         // Verify OTP

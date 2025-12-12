@@ -19,7 +19,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         // Check if we're in build environment
-        if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+        if (!process.env.DATABASE_URL) {
           throw new Error('Database not available during build')
         }
 
@@ -29,6 +29,10 @@ export const authOptions = {
 
         // Dynamic import to avoid build-time database connection
         const { prisma } = await import('@/lib/prisma')
+        
+        if (!prisma) {
+          throw new Error('Database not available')
+        }
 
         const loginType = credentials.loginType || 'password'
 
@@ -170,6 +174,11 @@ export const authOptions = {
         try {
           const { prisma } = await import('@/lib/prisma')
           
+          if (!prisma) {
+            console.error('Database not available for Google sign in')
+            return false
+          }
+          
           // Check if user exists
           let existingUser = await prisma.user.findUnique({
             where: { email: user.email },
@@ -215,12 +224,14 @@ export const authOptions = {
       if (account?.provider === 'google' && token.email) {
         try {
           const { prisma } = await import('@/lib/prisma')
-          const dbUser = await prisma.user.findUnique({
-            where: { email: token.email },
-          })
-          if (dbUser) {
-            token.id = dbUser.id
-            token.role = dbUser.role
+          if (prisma) {
+            const dbUser = await prisma.user.findUnique({
+              where: { email: token.email },
+            })
+            if (dbUser) {
+              token.id = dbUser.id
+              token.role = dbUser.role
+            }
           }
         } catch (error) {
           console.error('Error fetching user in JWT callback:', error)

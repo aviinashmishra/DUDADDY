@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request) {
   try {
     // Check if we're in build environment
-    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL) {
       return NextResponse.json(
         { error: 'Database not available during build' },
         { status: 503 }
@@ -21,6 +21,13 @@ export async function POST(request) {
 
     // Dynamic import to avoid build-time database connection
     const { prisma } = await import('@/lib/prisma')
+    
+    if (!prisma) {
+      return NextResponse.json(
+        { error: 'Database not available' },
+        { status: 503 }
+      )
+    }
 
     // Find valid OTP
     const otpRecord = await prisma.oTP.findFirst({

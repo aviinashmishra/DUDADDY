@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import jwt from 'jsonwebtoken'
 
 export async function POST(request) {
   try {
+    // Check if we're in build environment
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const { token } = await request.json()
 
     if (!token) {
@@ -21,6 +28,16 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'Invalid or expired token' },
         { status: 400 }
+      )
+    }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
+    
+    if (!prisma) {
+      return NextResponse.json(
+        { error: 'Database not available' },
+        { status: 503 }
       )
     }
 

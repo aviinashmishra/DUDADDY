@@ -1,16 +1,33 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
 
 export async function POST(request) {
   try {
+    // Check if we're in build environment
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const { email } = await request.json()
 
     if (!email) {
       return NextResponse.json(
         { error: 'Email is required' },
         { status: 400 }
+      )
+    }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
+    
+    if (!prisma) {
+      return NextResponse.json(
+        { error: 'Database not available' },
+        { status: 503 }
       )
     }
 

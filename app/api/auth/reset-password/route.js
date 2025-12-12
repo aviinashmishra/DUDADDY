@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server'
 import bcryptjs from 'bcryptjs'
-import { prisma } from '@/lib/prisma'
 
 export async function POST(request) {
   try {
+    // Check if we're in build environment
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not available during build' },
+        { status: 503 }
+      )
+    }
+
     const { token, password } = await request.json()
 
     if (!token || !password) {
@@ -18,6 +25,16 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'Password must be at least 6 characters long' },
         { status: 400 }
+      )
+    }
+
+    // Dynamic import to avoid build-time database connection
+    const { prisma } = await import('@/lib/prisma')
+    
+    if (!prisma) {
+      return NextResponse.json(
+        { error: 'Database not available' },
+        { status: 503 }
       )
     }
 

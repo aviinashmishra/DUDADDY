@@ -8,6 +8,13 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
     CredentialsProvider({
       name: 'credentials',
@@ -18,8 +25,8 @@ export const authOptions = {
         loginType: { label: 'Login Type', type: 'text' },
       },
       async authorize(credentials) {
-        // Check if we're in build environment
-        if (!process.env.DATABASE_URL) {
+        // Check if we're in build environment (only during actual build, not dev)
+        if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production' && !process.env.DATABASE_URL) {
           throw new Error('Database not available during build')
         }
 
@@ -170,13 +177,16 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account.provider === 'google') {
+      console.log('SignIn callback:', { user: user?.email, provider: account?.provider })
+      
+      if (account?.provider === 'google') {
         try {
           const { prisma } = await import('@/lib/prisma')
           
           if (!prisma) {
             console.error('Database not available for Google sign in')
-            return false
+            // Allow sign in even if database is not available, handle in JWT callback
+            return true
           }
           
           // Check if user exists
@@ -187,37 +197,42 @@ export const authOptions = {
           if (!existingUser) {
             // Create new user for Google OAuth
             const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-            await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 id: userId,
                 email: user.email,
-                name: user.name,
-                image: user.image,
+                name: user.name || user.email.split('@')[0],
+                image: user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email.split('@')[0])}&background=random`,
                 emailVerified: new Date(),
               },
             })
+            console.log('Created new Google user:', newUser.id)
           } else {
             // Update existing user with Google info
             await prisma.user.update({
               where: { id: existingUser.id },
               data: {
-                name: user.name,
-                image: user.image,
+                name: user.name || existingUser.name,
+                image: user.image || existingUser.image,
                 emailVerified: new Date(),
               },
             })
+            console.log('Updated existing Google user:', existingUser.id)
           }
         } catch (error) {
-          console.error('Error in Google sign in:', error)
-          return false
+          console.error('Error in Google sign in callback:', error)
+          // Don't block sign in, let JWT callback handle it
+          return true
         }
       }
       return true
     },
     async jwt({ token, user, account }) {
+      console.log('JWT callback:', { hasUser: !!user, provider: account?.provider, email: token.email })
+      
       if (user) {
         token.id = user.id
-        token.role = user.role
+        token.role = user.role || 'user'
       }
       
       // For Google OAuth, get user info from database
@@ -230,11 +245,25 @@ export const authOptions = {
             })
             if (dbUser) {
               token.id = dbUser.id
-              token.role = dbUser.role
+              token.role = dbUser.role || 'user'
+              console.log('Found Google user in database:', dbUser.id)
+            } else {
+              // If user not found in database, create a temporary ID
+              token.id = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+              token.role = 'user'
+              console.log('Google user not found in database, using temp ID')
             }
+          } else {
+            // If database not available, create a temporary ID
+            token.id = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            token.role = 'user'
+            console.log('Database not available, using temp ID for Google user')
           }
         } catch (error) {
           console.error('Error fetching user in JWT callback:', error)
+          // Fallback to temporary ID
+          token.id = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          token.role = 'user'
         }
       }
       
@@ -243,8 +272,9 @@ export const authOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id
-        session.user.role = token.role
+        session.user.role = token.role || 'user'
       }
+      console.log('Session callback:', { userId: session.user?.id, role: session.user?.role })
       return session
     },
   },

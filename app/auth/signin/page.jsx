@@ -45,11 +45,29 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setLoading(true)
     try {
-      await signIn('google', {
+      console.log('Starting Google sign in...')
+      const result = await signIn('google', {
         callbackUrl: '/',
+        redirect: false,
       })
+      
+      console.log('Google sign in result:', result)
+      
+      if (result?.error) {
+        console.error('Google sign in error:', result.error)
+        toast.error(`Google sign in failed: ${result.error}`)
+        setLoading(false)
+      } else if (result?.url) {
+        // Redirect manually if needed
+        window.location.href = result.url
+      } else {
+        // Success, redirect to home
+        router.push('/')
+        router.refresh()
+      }
     } catch (error) {
-      toast.error('Something went wrong')
+      console.error('Google sign in exception:', error)
+      toast.error('Something went wrong with Google sign in')
       setLoading(false)
     }
   }

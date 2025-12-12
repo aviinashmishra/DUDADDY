@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken'
 
 export async function POST(request) {
   try {
-    // Check if we're in build environment
-    if (!process.env.DATABASE_URL) {
+    // Check if we're in build environment (only during actual build, not dev)
+    if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production' && !process.env.DATABASE_URL) {
       return NextResponse.json(
         { error: 'Database not available during build' },
         { status: 503 }

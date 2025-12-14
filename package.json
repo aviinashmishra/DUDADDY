@@ -6,7 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate",
+    "generate-secrets": "node generate-secrets.js",
+    "test-email": "node test-email.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

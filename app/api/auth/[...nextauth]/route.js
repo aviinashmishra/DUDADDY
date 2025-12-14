@@ -25,21 +25,17 @@ export const authOptions = {
         loginType: { label: 'Login Type', type: 'text' },
       },
       async authorize(credentials) {
-        // Check if we're in build environment (only during actual build, not dev)
-        if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production' && !process.env.DATABASE_URL) {
-          throw new Error('Database not available during build')
-        }
+        try {
+          if (!credentials?.email) {
+            throw new Error('Email is required')
+          }
 
-        if (!credentials?.email) {
-          throw new Error('Email is required')
-        }
-
-        // Dynamic import to avoid build-time database connection
-        const { prisma } = await import('@/lib/prisma')
-        
-        if (!prisma) {
-          throw new Error('Database not available')
-        }
+          // Dynamic import to avoid build-time database connection
+          const { prisma } = await import('@/lib/prisma')
+          
+          if (!prisma) {
+            throw new Error('Database connection failed. Please try again.')
+          }
 
         const loginType = credentials.loginType || 'password'
 
@@ -172,6 +168,10 @@ export const authOptions = {
         }
 
         throw new Error('Invalid login type')
+        } catch (error) {
+          console.error('Authorization error:', error)
+          throw new Error(error.message || 'Authentication failed. Please try again.')
+        }
       },
     }),
   ],
@@ -284,8 +284,11 @@ export const authOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
+  trustHost: true, // Important for Vercel deployment
 }
 
 const handler = NextAuth(authOptions)

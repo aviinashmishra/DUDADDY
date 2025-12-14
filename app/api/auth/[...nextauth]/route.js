@@ -3,19 +3,42 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import bcryptjs from 'bcryptjs'
 
+// Validate required environment variables
+const requiredEnvVars = {
+  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  DATABASE_URL: process.env.DATABASE_URL,
+}
+
+// Check for missing environment variables
+const missingEnvVars = Object.entries(requiredEnvVars)
+  .filter(([key, value]) => !value)
+  .map(([key]) => key)
+
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars)
+  // Don't throw error in development, just log warning
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`)
+  }
+}
+
 export const authOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code"
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorization: {
+          params: {
+            prompt: "consent",
+            access_type: "offline",
+            response_type: "code"
+          }
         }
-      }
-    }),
+      })
+    ] : []),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -52,7 +75,7 @@ export const authOptions = {
             })
 
             if (!user) {
-              const adminId = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+              const adminId = `admin_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
               user = await prisma.user.create({
                 data: {
                   id: adminId,
@@ -141,7 +164,7 @@ export const authOptions = {
           })
 
           if (!user) {
-            const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            const userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
             user = await prisma.user.create({
               data: {
                 id: userId,
@@ -176,7 +199,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       console.log('SignIn callback:', { user: user?.email, provider: account?.provider })
       
       if (account?.provider === 'google') {
@@ -196,7 +219,7 @@ export const authOptions = {
 
           if (!existingUser) {
             // Create new user for Google OAuth
-            const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            const userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
             const newUser = await prisma.user.create({
               data: {
                 id: userId,
@@ -249,20 +272,20 @@ export const authOptions = {
               console.log('Found Google user in database:', dbUser.id)
             } else {
               // If user not found in database, create a temporary ID
-              token.id = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+              token.id = `temp_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
               token.role = 'user'
               console.log('Google user not found in database, using temp ID')
             }
           } else {
             // If database not available, create a temporary ID
-            token.id = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            token.id = `temp_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
             token.role = 'user'
             console.log('Database not available, using temp ID for Google user')
           }
         } catch (error) {
           console.error('Error fetching user in JWT callback:', error)
           // Fallback to temporary ID
-          token.id = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          token.id = `temp_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
           token.role = 'user'
         }
       }
@@ -289,6 +312,31 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
   trustHost: true, // Important for Vercel deployment
+  useSecureCookies: process.env.NODE_ENV === 'production',
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
+  logger: {
+    error(code, metadata) {
+      console.error('NextAuth Error:', code, metadata)
+    },
+    warn(code) {
+      console.warn('NextAuth Warning:', code)
+    },
+    debug(code, metadata) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('NextAuth Debug:', code, metadata)
+      }
+    }
+  }
 }
 
 const handler = NextAuth(authOptions)

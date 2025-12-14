@@ -1,5 +1,5 @@
 ╔════════════════════════════════════════════════════════════╗
-║          🎉 GOCART SETUP COMPLETE 🎉                       ║
+║          🎉 DUDADDY SETUP COMPLETE 🎉                      ║
 ╚════════════════════════════════════════════════════════════╝
 
 ✅ SYSTEM STATUS: ALL OPERATIONAL
@@ -66,7 +66,7 @@
 ├─────────────────────────────────────────────────────────┤
 │ ✅ Email/OTP Authentication                             │
 │ ✅ User Registration & Login                            │
-│ ✅ Multi-Vendor Store System                            │
+│ ✅ Premium Brand Store System                          │
 │ ✅ Product Management (CRUD)                            │
 │ ✅ Shopping Cart & Orders                               │
 │ ✅ Admin Panel & Approvals                              │
@@ -104,7 +104,7 @@
 ╔════════════════════════════════════════════════════════════╗
 ║  🚀 READY TO LAUNCH!                                       ║
 ║                                                            ║
-║  Your GoCart multi-vendor e-commerce platform is fully     ║
+║  Your DuDaddy premium supplements platform is fully       ║
 ║  operational with complete authentication, backend APIs,   ║
 ║  email system, and admin controls.                         ║
 ║                                                            ║

@@ -14,10 +14,10 @@ const Footer = () => {
         {
             title: "PRODUCTS",
             links: [
-                { text: "Earphones", path: '/', icon: null },
-                { text: "Headphones", path: '/', icon: null },
-                { text: "Smartphones", path: '/', icon: null },
-                { text: "Laptops", path: '/', icon: null },
+                { text: "Phytonic Blaze", path: '/', icon: null },
+                { text: "Phytonic Blaze", path: '/', icon: null },
+                { text: "Phytonic Blaze", path: '/', icon: null },
+                { text: "Phytonic Blaze", path: '/', icon: null },
             ]
         },
         {
@@ -32,18 +32,18 @@ const Footer = () => {
         {
             title: "CONTACT",
             links: [
-                { text: "+1-212-456-7890", path: '/', icon: MailIcon },
-                { text: "contact@example.com", path: '/', icon: PhoneIcon },
-                { text: "794 Francisco, 94102", path: '/', icon: MapPinIcon }
+                { text: "+918840808354", path: '/', icon: MailIcon },
+                { text: "dudaddyworld@gmail.com", path: '/', icon: PhoneIcon },
+                { text: "Delhi, India", path: '/', icon: MapPinIcon }
             ]
         }
     ];
 
     const socialIcons = [
         { icon: FacebookIcon, link: "https://www.facebook.com" },
-        { icon: InstagramIcon, link: "https://www.instagram.com" },
+        { icon: InstagramIcon, link: "https://www.instagram.com/dudaddyy" },
         { icon: TwitterIcon, link: "https://twitter.com" },
-        { icon: LinkedinIcon, link: "https://www.linkedin.com" },
+        { icon: LinkedinIcon, link: "https://www.linkedin.com/company/dudaddy" },
     ]
 
     return (

@@ -41,17 +41,17 @@ async function testEmail() {
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to: process.env.EMAIL_SERVER_USER,
-      subject: 'GoCart - Email Test Successful',
+      subject: 'DuDaddy - Email Test Successful',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">✅ Email Configuration Test</h2>
-          <p>Your GoCart email system is working correctly!</p>
+          <p>Your DuDaddy email system is working correctly!</p>
           <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
             ${testOTP}
           </div>
           <p>This is a test OTP code. Your authentication system is ready to use.</p>
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-          <p style="color: #666; font-size: 12px;">GoCart - Your Multi-Vendor E-Commerce Platform</p>
+          <p style="color: #666; font-size: 12px;">DuDaddy - Premium Ayurvedic Supplements</p>
         </div>
       `,
     })

@@ -6,7 +6,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 async function checkStatus() {
-  console.log('🔍 GoCart System Status Check\n')
+  console.log('🔍 DuDaddy System Status Check\n')
   console.log('=' .repeat(50))
   
   // Check environment variables

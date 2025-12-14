@@ -16,21 +16,21 @@ export default function Contact() {
         {
             icon: Mail,
             title: "Email Us",
-            detail: "support@dudaddy.com",
-            link: "mailto:support@dudaddy.com",
+            detail: "dudaddyworld@gmail.com",
+            link: "mailto:dudaddyworld@gmail.com",
             color: "from-[#de2529] to-[#ff3b3f]"
         },
         {
             icon: Phone,
             title: "Call Us",
-            detail: "+91 98765 43210",
-            link: "tel:+919876543210",
+            detail: "+91 8840808354",
+            link: "tel:+918840808354",
             color: "from-[#00D9FF] to-[#0099FF]"
         },
         {
             icon: MapPin,
             title: "Visit Us",
-            detail: "Mumbai, Maharashtra, India",
+            detail: "Delhi, India",
             link: "#",
             color: "from-[#de2529] to-[#ff3b3f]"
         },
@@ -44,9 +44,9 @@ export default function Contact() {
     ]
 
     const socialLinks = [
-        { icon: Instagram, link: "https://instagram.com", label: "Instagram" },
+        { icon: Instagram, link: "https://instagram.com/dudaddyy", label: "Instagram" },
         { icon: Facebook, link: "https://facebook.com", label: "Facebook" },
-        { icon: Linkedin, link: "https://linkedin.com", label: "LinkedIn" },
+        { icon: Linkedin, link: "https://linkedin.com/company/dudaddy", label: "LinkedIn" },
         { icon: Twitter, link: "https://twitter.com", label: "Twitter" }
     ]
 
@@ -152,7 +152,7 @@ export default function Contact() {
                                             onChange={handleChange}
                                             required
                                             className="w-full bg-[#0A0E1A] border border-[#1A2332] rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none focus:border-[#de2529] transition-colors"
-                                            placeholder="John Doe"
+                                            placeholder="Avinash Mishra"
                                         />
                                     </div>
                                     <div>
@@ -166,7 +166,7 @@ export default function Contact() {
                                             onChange={handleChange}
                                             required
                                             className="w-full bg-[#0A0E1A] border border-[#1A2332] rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none focus:border-[#de2529] transition-colors"
-                                            placeholder="john@example.com"
+                                            placeholder="dudaddyworld@gmail.com"
                                         />
                                     </div>
                                 </div>
@@ -182,7 +182,7 @@ export default function Contact() {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             className="w-full bg-[#0A0E1A] border border-[#1A2332] rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none focus:border-[#de2529] transition-colors"
-                                            placeholder="+91 98765 43210"
+                                            placeholder="+91 8840808354"
                                         />
                                     </div>
                                     <div>
@@ -256,7 +256,7 @@ export default function Contact() {
                             <p className="text-white/90 mb-4 text-sm">
                                 Our customer support team is available to assist you with any questions or concerns.
                             </p>
-                            <a href="tel:+919876543210" className="btn-secondary bg-white text-[#de2529] border-white hover:bg-white/90 w-full justify-center">
+                            <a href="tel:+918840808354" className="btn-secondary bg-white text-[#de2529] border-white hover:bg-white/90 w-full justify-center">
                                 Call Now
                             </a>
                         </div>

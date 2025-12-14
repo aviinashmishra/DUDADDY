@@ -16,22 +16,32 @@ export default function ForgotPassword() {
     setLoading(true)
 
     try {
+      console.log('Sending forgot password request for:', email)
+      
       const response = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       })
 
+      console.log('Response status:', response.status)
       const data = await response.json()
+      console.log('Response data:', data)
 
       if (response.ok) {
         toast.success('Password reset email sent!')
         setStep('sent')
       } else {
-        toast.error(data.error || 'Failed to send reset email')
+        console.error('Forgot password error:', data)
+        if (data.details && process.env.NODE_ENV === 'development') {
+          toast.error(`Error: ${data.error} - ${data.details}`)
+        } else {
+          toast.error(data.error || 'Failed to send reset email')
+        }
       }
     } catch (error) {
-      toast.error('Something went wrong')
+      console.error('Forgot password exception:', error)
+      toast.error('Network error: Please check your connection and try again')
     } finally {
       setLoading(false)
     }

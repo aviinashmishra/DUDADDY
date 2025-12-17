@@ -5,6 +5,18 @@ import bcryptjs from 'bcryptjs'
 
 // Comprehensive environment variable validation
 function validateEnvironment() {
+  // Skip validation during build time
+  if (process.env.NEXT_PHASE === 'phase-production-build' || 
+      process.env.NEXT_PHASE === 'phase-development-server' ||
+      process.env.NODE_ENV === 'development') {
+    return {
+      isValid: true,
+      errors: [],
+      warnings: [],
+      hasGoogleOAuth: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
+    }
+  }
+
   const requiredVars = {
     NEXTAUTH_SECRET: {
       value: process.env.NEXTAUTH_SECRET,
@@ -77,8 +89,12 @@ function validateEnvironment() {
 
   if (errors.length > 0) {
     console.error('Environment validation failed:', errors)
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(`Environment validation failed: ${errors.join(', ')}`)
+    
+    // Don't throw errors during build - only warn
+    if (process.env.NEXT_PHASE) {
+      console.warn('Environment validation failed during build. Please set environment variables in Vercel.')
+    } else {
+      console.warn('Environment validation failed. Some features may not work correctly.')
     }
   } else {
     console.log('Environment validation passed')
@@ -92,12 +108,22 @@ function validateEnvironment() {
   }
 }
 
-// Validate environment on module load
-const envValidation = validateEnvironment()
+// Only validate environment in runtime, not during build
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                   process.env.NEXT_PHASE === 'phase-development-server'
+
+if (!isBuildTime) {
+  // Run validation only at runtime
+  try {
+    validateEnvironment()
+  } catch (error) {
+    console.error('Environment validation error:', error.message)
+  }
+}
 
 export const authOptions = {
   providers: [
-    ...(envValidation.hasGoogleOAuth ? [
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,

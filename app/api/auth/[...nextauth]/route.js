@@ -3,30 +3,101 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import bcryptjs from 'bcryptjs'
 
-// Validate required environment variables
-const requiredEnvVars = {
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  DATABASE_URL: process.env.DATABASE_URL,
-}
+// Comprehensive environment variable validation
+function validateEnvironment() {
+  const requiredVars = {
+    NEXTAUTH_SECRET: {
+      value: process.env.NEXTAUTH_SECRET,
+      validator: (val) => val && val.length >= 32,
+      error: 'NEXTAUTH_SECRET must be at least 32 characters long'
+    },
+    DATABASE_URL: {
+      value: process.env.DATABASE_URL,
+      validator: (val) => val && val.startsWith('postgresql://'),
+      error: 'DATABASE_URL must be a valid PostgreSQL connection string'
+    }
+  }
 
-// Check for missing environment variables
-const missingEnvVars = Object.entries(requiredEnvVars)
-  .filter(([key, value]) => !value)
-  .map(([key]) => key)
+  const conditionalVars = {
+    GOOGLE_CLIENT_ID: {
+      value: process.env.GOOGLE_CLIENT_ID,
+      validator: (val) => val && val.length > 0,
+      error: 'GOOGLE_CLIENT_ID is required for Google OAuth'
+    },
+    GOOGLE_CLIENT_SECRET: {
+      value: process.env.GOOGLE_CLIENT_SECRET,
+      validator: (val) => val && val.length > 0,
+      error: 'GOOGLE_CLIENT_SECRET is required for Google OAuth'
+    }
+  }
 
-if (missingEnvVars.length > 0) {
-  console.error('Missing required environment variables:', missingEnvVars)
-  // Don't throw error in development, just log warning
+  const errors = []
+  const warnings = []
+
+  // Check required variables
+  Object.entries(requiredVars).forEach(([key, config]) => {
+    if (!config.value) {
+      errors.push(`Missing required environment variable: ${key}`)
+    } else if (!config.validator(config.value)) {
+      errors.push(`Invalid ${key}: ${config.error}`)
+    }
+  })
+
+  // Check conditional variables (for Google OAuth)
+  const hasGoogleId = !!process.env.GOOGLE_CLIENT_ID
+  const hasGoogleSecret = !!process.env.GOOGLE_CLIENT_SECRET
+  
+  if (hasGoogleId && !hasGoogleSecret) {
+    errors.push('GOOGLE_CLIENT_SECRET is required when GOOGLE_CLIENT_ID is provided')
+  } else if (!hasGoogleId && hasGoogleSecret) {
+    errors.push('GOOGLE_CLIENT_ID is required when GOOGLE_CLIENT_SECRET is provided')
+  } else if (!hasGoogleId && !hasGoogleSecret) {
+    warnings.push('Google OAuth not configured - only credentials authentication will be available')
+  }
+
+  // Check NEXTAUTH_URL for production
   if (process.env.NODE_ENV === 'production') {
-    throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`)
+    if (!process.env.NEXTAUTH_URL) {
+      // Try to auto-detect Vercel URL
+      if (process.env.VERCEL_URL) {
+        process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`
+        console.log(`Auto-detected NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
+      } else {
+        errors.push('NEXTAUTH_URL is required in production environment. Set it to your domain (e.g., https://your-app.vercel.app)')
+      }
+    } else if (!process.env.NEXTAUTH_URL.startsWith('https://')) {
+      errors.push('NEXTAUTH_URL must use HTTPS in production')
+    }
+  }
+
+  // Log results
+  if (warnings.length > 0) {
+    console.warn('Environment warnings:', warnings)
+  }
+
+  if (errors.length > 0) {
+    console.error('Environment validation failed:', errors)
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`Environment validation failed: ${errors.join(', ')}`)
+    }
+  } else {
+    console.log('Environment validation passed')
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    warnings,
+    hasGoogleOAuth: hasGoogleId && hasGoogleSecret
   }
 }
 
+// Validate environment on module load
+const envValidation = validateEnvironment()
+
 export const authOptions = {
   providers: [
-    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
+    ...(envValidation.hasGoogleOAuth ? [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -36,7 +107,11 @@ export const authOptions = {
             access_type: "offline",
             response_type: "code"
           }
-        }
+        },
+        // Ensure proper callback URL for production
+        callbackUrl: process.env.NODE_ENV === 'production' 
+          ? `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
+          : 'http://localhost:3000/api/auth/callback/google'
       })
     ] : []),
     CredentialsProvider({
@@ -308,14 +383,35 @@ export const authOptions = {
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
   trustHost: true, // Important for Vercel deployment
   useSecureCookies: process.env.NODE_ENV === 'production',
+  // Enhanced cookie configuration for production
   cookies: {
     sessionToken: {
       name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let browser set domain
+      },
+    },
+    callbackUrl: {
+      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+    csrfToken: {
+      name: process.env.NODE_ENV === 'production' ? '__Host-next-auth.csrf-token' : 'next-auth.csrf-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -326,14 +422,58 @@ export const authOptions = {
   },
   logger: {
     error(code, metadata) {
-      console.error('NextAuth Error:', code, metadata)
+      console.error('NextAuth Error:', {
+        code,
+        metadata,
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        url: process.env.NEXTAUTH_URL,
+        vercelUrl: process.env.VERCEL_URL
+      })
     },
     warn(code) {
-      console.warn('NextAuth Warning:', code)
+      console.warn('NextAuth Warning:', {
+        code,
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV
+      })
     },
     debug(code, metadata) {
       if (process.env.NODE_ENV === 'development') {
         console.log('NextAuth Debug:', code, metadata)
+      }
+    }
+  },
+  // Enhanced error handling for production
+  events: {
+    async signIn({ user, account, profile }) {
+      console.log('Sign in event:', {
+        userId: user?.id,
+        email: user?.email,
+        provider: account?.provider,
+        timestamp: new Date().toISOString()
+      })
+    },
+    async signOut({ session, token }) {
+      console.log('Sign out event:', {
+        userId: session?.user?.id || token?.id,
+        timestamp: new Date().toISOString()
+      })
+    },
+    async createUser({ user }) {
+      console.log('User created:', {
+        userId: user.id,
+        email: user.email,
+        timestamp: new Date().toISOString()
+      })
+    },
+    async session({ session, token }) {
+      // Only log in development to avoid spam
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Session accessed:', {
+          userId: session?.user?.id || token?.id,
+          timestamp: new Date().toISOString()
+        })
       }
     }
   }

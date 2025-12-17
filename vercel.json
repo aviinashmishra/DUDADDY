@@ -4,12 +4,9 @@
       "maxDuration": 30
     }
   },
-  "env": {
-    "NEXTAUTH_URL_INTERNAL": "http://localhost:3000"
-  },
   "build": {
     "env": {
-      "NEXTAUTH_URL_INTERNAL": "http://localhost:3000"
+      "NODE_ENV": "production"
     }
   }
 }

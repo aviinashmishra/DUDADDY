@@ -58,6 +58,14 @@ export default function AuthButton() {
               <p className="text-xs text-gray-400">{session.user.email}</p>
             </div>
             <Link
+              href="/profile"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-[#1A2332] hover:text-[#de2529] transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              <User size={16} />
+              My Profile
+            </Link>
+            <Link
               href="/orders"
               className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-[#1A2332] hover:text-[#de2529] transition-colors"
               onClick={() => setShowMenu(false)}

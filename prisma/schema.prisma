@@ -30,6 +30,12 @@ model User {
     accounts    Account[]
     sessions    Session[]
     passwordResetTokens PasswordResetToken[]
+    
+    // Profile Management Relations
+    profile        UserProfile?
+    preferences    UserPreferences?
+    paymentMethods SavedPaymentMethod[]
+    supportTickets SupportTicket[]
 }
 
 model PasswordResetToken {
@@ -180,21 +186,30 @@ model Rating {
 
 // Required for creating an Address: userId, name, email, street, city, state, zip, country, phone
 model Address {
-    id        String   @id @default(cuid())
-    userId    String
-    name      String
-    email     String
-    street    String
-    city      String
-    state     String
-    zip       String
-    country   String
-    phone     String
-    createdAt DateTime @default(now())
+    id           String      @id @default(cuid())
+    userId       String
+    type         AddressType @default(HOME)
+    label        String?     // Custom label for address
+    firstName    String
+    lastName     String
+    email        String
+    addressLine1 String      // Renamed from street
+    addressLine2 String?     // Additional address line
+    city         String
+    state        String
+    postalCode   String      // Renamed from zip
+    country      String
+    phone        String
+    isDefault    Boolean     @default(false)
+    createdAt    DateTime    @default(now())
+    updatedAt    DateTime    @updatedAt
 
     // Relations
     Order Order[]
     user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([isDefault])
 }
 
 // Required for creating a Coupon: code, description, discount, forNewUser, isPublic, expiresAt
@@ -228,4 +243,132 @@ model Store {
     Product Product[]
     Order   Order[]
     user    User      @relation(fields: [userId], references: [id])
+}
+
+// Profile Management Models
+
+model UserProfile {
+    id           String    @id @default(cuid())
+    userId       String    @unique
+    firstName    String?
+    lastName     String?
+    phone        String?
+    dateOfBirth  DateTime?
+    profilePicture String?
+    bio          String?
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserPreferences {
+    id                String   @id @default(cuid())
+    userId            String   @unique
+    emailNotifications Boolean @default(true)
+    smsNotifications  Boolean  @default(false)
+    marketingEmails   Boolean  @default(true)
+    orderUpdates      Boolean  @default(true)
+    promotionalOffers Boolean  @default(true)
+    dataSharing       Boolean  @default(false)
+    twoFactorEnabled  Boolean  @default(false)
+    language          String   @default("en")
+    currency          String   @default("INR")
+    timezone          String   @default("Asia/Kolkata")
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum AddressType {
+    HOME
+    WORK
+    BILLING
+    SHIPPING
+    CUSTOM
+}
+
+enum PaymentType {
+    CARD
+    WALLET
+    BANK
+}
+
+model SavedPaymentMethod {
+    id            String      @id @default(cuid())
+    userId        String
+    type          PaymentType
+    provider      String      // visa, mastercard, paypal, etc.
+    maskedNumber  String      // Last 4 digits or masked info
+    expiryMonth   Int?
+    expiryYear    Int?
+    holderName    String?
+    isDefault     Boolean     @default(false)
+    isExpired     Boolean     @default(false)
+    encryptedData String      // Encrypted payment details
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+enum SupportCategory {
+    ORDER_ISSUE
+    PAYMENT_ISSUE
+    PRODUCT_ISSUE
+    ACCOUNT_ISSUE
+    TECHNICAL_ISSUE
+    GENERAL_INQUIRY
+    RETURN_REQUEST
+    REFUND_REQUEST
+}
+
+enum TicketStatus {
+    OPEN
+    IN_PROGRESS
+    WAITING_FOR_CUSTOMER
+    RESOLVED
+    CLOSED
+}
+
+enum TicketPriority {
+    LOW
+    MEDIUM
+    HIGH
+    URGENT
+}
+
+model SupportTicket {
+    id          String          @id @default(cuid())
+    userId      String
+    orderId     String?
+    category    SupportCategory
+    subject     String
+    description String
+    status      TicketStatus    @default(OPEN)
+    priority    TicketPriority  @default(MEDIUM)
+    attachments String[]        @default([])
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @updatedAt
+
+    user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+    responses SupportTicketResponse[]
+
+    @@index([userId])
+    @@index([status])
+}
+
+model SupportTicketResponse {
+    id        String   @id @default(cuid())
+    ticketId  String
+    message   String
+    isFromUser Boolean @default(true)
+    createdAt DateTime @default(now())
+
+    ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+    @@index([ticketId])
 }

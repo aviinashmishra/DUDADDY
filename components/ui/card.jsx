@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 const Card = ({ className, ...props }) => (
   <div
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "bg-[#0F1420] border border-[#1A2332] rounded-xl text-white shadow-lg hover:border-[#de2529]/50 transition-all duration-300",
       className
     )}
     {...props}
@@ -17,7 +17,7 @@ const CardHeader = ({ className, ...props }) => (
 const CardTitle = ({ className, ...props }) => (
   <h3
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-2xl font-semibold leading-none tracking-tight text-white",
       className
     )}
     {...props}
@@ -26,7 +26,7 @@ const CardTitle = ({ className, ...props }) => (
 
 const CardDescription = ({ className, ...props }) => (
   <p
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-gray-400", className)}
     {...props}
   />
 )

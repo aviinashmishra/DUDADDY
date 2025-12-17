@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils'
 
 const buttonVariants = {
-  default: "bg-red-600 text-white hover:bg-red-700",
+  default: "bg-gradient-to-r from-[#de2529] to-[#ff3b3f] text-white font-semibold hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 active:scale-95",
   destructive: "bg-red-500 text-white hover:bg-red-600",
-  outline: "border border-gray-300 bg-white hover:bg-gray-50 text-gray-900",
-  secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
-  ghost: "hover:bg-gray-100 text-gray-900",
-  link: "text-red-600 underline-offset-4 hover:underline",
+  outline: "border border-[#1A2332] bg-[#0F1420] hover:bg-[#1A2332] hover:border-[#de2529]/50 text-gray-300 hover:text-white",
+  secondary: "bg-[#1A2332] text-gray-300 hover:bg-[#2A3441] hover:text-white",
+  ghost: "hover:bg-[#1A2332] text-gray-300 hover:text-white",
+  link: "text-[#de2529] underline-offset-4 hover:underline hover:text-[#ff3b3f]",
 }
 
 const buttonSizes = {

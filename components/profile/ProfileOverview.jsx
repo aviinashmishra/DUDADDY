@@ -74,26 +74,26 @@ export default function ProfileOverview({ profileData, onUpdate }) {
   return (
     <div className="space-y-6">
       {/* Personal Information Card */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+      <div className="card-dark">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 p-6 border-b border-[#1A2332]">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
+            <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+              <User className="h-6 w-6 text-[#de2529]" />
               Personal Information
-            </CardTitle>
-            <CardDescription>
+            </h3>
+            <p className="text-gray-400">
               Manage your personal details and contact information
-            </CardDescription>
+            </p>
           </div>
           {!isEditing ? (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:border-[#de2529] hover:text-[#de2529]"
             >
               <Edit className="h-4 w-4" />
-              Edit
+              Edit Profile
             </Button>
           ) : (
             <div className="flex gap-2">
@@ -118,17 +118,17 @@ export default function ProfileOverview({ profileData, onUpdate }) {
                 ) : (
                   <Save className="h-4 w-4" />
                 )}
-                Save
+                Save Changes
               </Button>
             </div>
           )}
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+        <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* First Name */}
             <div className="space-y-2">
-              <Label htmlFor="firstName" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
+              <Label htmlFor="firstName" className="flex items-center gap-2 text-gray-300">
+                <User className="h-4 w-4 text-[#de2529]" />
                 First Name
               </Label>
               {isEditing ? (
@@ -139,16 +139,16 @@ export default function ProfileOverview({ profileData, onUpdate }) {
                   placeholder="Enter your first name"
                 />
               ) : (
-                <p className="text-gray-900 py-2 px-3 bg-gray-50 rounded-md">
-                  {formData.firstName || 'Not provided'}
-                </p>
+                <div className="text-white py-3 px-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+                  {formData.firstName || <span className="text-gray-500">Not provided</span>}
+                </div>
               )}
             </div>
 
             {/* Last Name */}
             <div className="space-y-2">
-              <Label htmlFor="lastName" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
+              <Label htmlFor="lastName" className="flex items-center gap-2 text-gray-300">
+                <User className="h-4 w-4 text-[#de2529]" />
                 Last Name
               </Label>
               {isEditing ? (
@@ -159,21 +159,21 @@ export default function ProfileOverview({ profileData, onUpdate }) {
                   placeholder="Enter your last name"
                 />
               ) : (
-                <p className="text-gray-900 py-2 px-3 bg-gray-50 rounded-md">
-                  {formData.lastName || 'Not provided'}
-                </p>
+                <div className="text-white py-3 px-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+                  {formData.lastName || <span className="text-gray-500">Not provided</span>}
+                </div>
               )}
             </div>
 
             {/* Email (Read-only) */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
+              <Label className="flex items-center gap-2 text-gray-300">
+                <Mail className="h-4 w-4 text-[#de2529]" />
                 Email Address
               </Label>
-              <p className="text-gray-900 py-2 px-3 bg-gray-100 rounded-md">
+              <div className="text-white py-3 px-4 bg-[#2A3441] rounded-lg border border-[#3A4451] opacity-75">
                 {profileData?.user?.email}
-              </p>
+              </div>
               <p className="text-xs text-gray-500">
                 Email cannot be changed. Contact support if needed.
               </p>
@@ -181,8 +181,8 @@ export default function ProfileOverview({ profileData, onUpdate }) {
 
             {/* Phone */}
             <div className="space-y-2">
-              <Label htmlFor="phone" className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
+              <Label htmlFor="phone" className="flex items-center gap-2 text-gray-300">
+                <Phone className="h-4 w-4 text-[#de2529]" />
                 Phone Number
               </Label>
               {isEditing ? (
@@ -194,16 +194,16 @@ export default function ProfileOverview({ profileData, onUpdate }) {
                   placeholder="Enter your phone number"
                 />
               ) : (
-                <p className="text-gray-900 py-2 px-3 bg-gray-50 rounded-md">
-                  {formData.phone || 'Not provided'}
-                </p>
+                <div className="text-white py-3 px-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+                  {formData.phone || <span className="text-gray-500">Not provided</span>}
+                </div>
               )}
             </div>
 
             {/* Date of Birth */}
             <div className="space-y-2">
-              <Label htmlFor="dateOfBirth" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+              <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-gray-300">
+                <Calendar className="h-4 w-4 text-[#de2529]" />
                 Date of Birth
               </Label>
               {isEditing ? (
@@ -214,96 +214,117 @@ export default function ProfileOverview({ profileData, onUpdate }) {
                   onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                 />
               ) : (
-                <p className="text-gray-900 py-2 px-3 bg-gray-50 rounded-md">
+                <div className="text-white py-3 px-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
                   {formData.dateOfBirth ? 
-                    new Date(formData.dateOfBirth).toLocaleDateString() : 
-                    'Not provided'
+                    new Date(formData.dateOfBirth).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }) : 
+                    <span className="text-gray-500">Not provided</span>
                   }
-                </p>
+                </div>
               )}
             </div>
           </div>
 
           {/* Bio */}
           <div className="space-y-2">
-            <Label htmlFor="bio" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
+            <Label htmlFor="bio" className="flex items-center gap-2 text-gray-300">
+              <FileText className="h-4 w-4 text-[#de2529]" />
               Bio
             </Label>
             {isEditing ? (
-              <Textarea
-                id="bio"
-                value={formData.bio}
-                onChange={(e) => handleInputChange('bio', e.target.value)}
-                placeholder="Tell us about yourself..."
-                rows={4}
-                maxLength={500}
-              />
+              <div className="space-y-2">
+                <Textarea
+                  id="bio"
+                  value={formData.bio}
+                  onChange={(e) => handleInputChange('bio', e.target.value)}
+                  placeholder="Tell us about yourself..."
+                  rows={4}
+                  maxLength={500}
+                />
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-gray-500">
+                    {formData.bio.length}/500 characters
+                  </p>
+                  <div className={`text-xs ${formData.bio.length > 450 ? 'text-red-400' : 'text-gray-500'}`}>
+                    {500 - formData.bio.length} remaining
+                  </div>
+                </div>
+              </div>
             ) : (
-              <p className="text-gray-900 py-2 px-3 bg-gray-50 rounded-md min-h-[100px]">
-                {formData.bio || 'No bio provided'}
-              </p>
-            )}
-            {isEditing && (
-              <p className="text-xs text-gray-500">
-                {formData.bio.length}/500 characters
-              </p>
+              <div className="text-white py-3 px-4 bg-[#1A2332] rounded-lg border border-[#2A3441] min-h-[100px]">
+                {formData.bio || <span className="text-gray-500">No bio provided</span>}
+              </div>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Account Information Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Account Information</CardTitle>
-          <CardDescription>
+      <div className="card-dark">
+        <div className="p-6 border-b border-[#1A2332]">
+          <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+            <Settings className="h-6 w-6 text-[#de2529]" />
+            Account Information
+          </h3>
+          <p className="text-gray-400">
             Your account details and membership information
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </p>
+        </div>
+        <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Account Status</Label>
-              <p className="text-gray-900 py-2">
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-gray-300">Account Status</Label>
+              <div className="py-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                   Active
                 </span>
-              </p>
+              </div>
             </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Member Since</Label>
-              <p className="text-gray-900 py-2">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-gray-300">Member Since</Label>
+              <div className="text-white py-2">
                 {new Date(profileData?.user?.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
                 })}
-              </p>
+              </div>
             </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Email Verified</Label>
-              <p className="text-gray-900 py-2">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-gray-300">Email Verified</Label>
+              <div className="py-2">
                 {profileData?.user?.emailVerified ? (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                     Verified
                   </span>
                 ) : (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
                     Pending
                   </span>
                 )}
-              </p>
+              </div>
             </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Account Type</Label>
-              <p className="text-gray-900 py-2 capitalize">
-                {profileData?.user?.role || 'User'}
-              </p>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-gray-300">Account Type</Label>
+              <div className="py-2">
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium capitalize ${
+                  profileData?.user?.role === 'admin' 
+                    ? 'bg-gradient-to-r from-[#de2529] to-[#ff3b3f] text-white' 
+                    : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                }`}>
+                  {profileData?.user?.role || 'User'}
+                </span>
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

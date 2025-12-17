@@ -11,8 +11,8 @@ const Switch = ({ checked, onCheckedChange, disabled, className, ...props }) => 
       onClick={() => onCheckedChange?.(!checked)}
       disabled={disabled}
       className={cn(
-        "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
-        checked ? "bg-red-600" : "bg-gray-200",
+        "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#de2529] disabled:cursor-not-allowed disabled:opacity-50",
+        checked ? "bg-gradient-to-r from-[#de2529] to-[#ff3b3f]" : "bg-[#1A2332]",
         className
       )}
       {...props}

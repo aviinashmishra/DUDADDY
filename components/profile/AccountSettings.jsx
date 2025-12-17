@@ -63,22 +63,22 @@ export default function AccountSettings({ profileData, onUpdate }) {
   return (
     <div className="space-y-6">
       {/* Notification Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
+      <div className="card-dark">
+        <div className="p-6 border-b border-[#1A2332]">
+          <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+            <Bell className="h-6 w-6 text-[#de2529]" />
             Notification Preferences
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p className="text-gray-400">
             Choose how you want to be notified about your orders and account
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="emailNotifications">Email Notifications</Label>
-                <p className="text-sm text-gray-500">
+          </p>
+        </div>
+        <div className="p-6 space-y-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="emailNotifications" className="text-white font-medium">Email Notifications</Label>
+                <p className="text-sm text-gray-400">
                   Receive notifications via email
                 </p>
               </div>
@@ -89,10 +89,10 @@ export default function AccountSettings({ profileData, onUpdate }) {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="smsNotifications">SMS Notifications</Label>
-                <p className="text-sm text-gray-500">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="smsNotifications" className="text-white font-medium">SMS Notifications</Label>
+                <p className="text-sm text-gray-400">
                   Receive notifications via SMS
                 </p>
               </div>
@@ -103,10 +103,10 @@ export default function AccountSettings({ profileData, onUpdate }) {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="orderUpdates">Order Updates</Label>
-                <p className="text-sm text-gray-500">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="orderUpdates" className="text-white font-medium">Order Updates</Label>
+                <p className="text-sm text-gray-400">
                   Get notified about order status changes
                 </p>
               </div>
@@ -117,10 +117,10 @@ export default function AccountSettings({ profileData, onUpdate }) {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="marketingEmails">Marketing Emails</Label>
-                <p className="text-sm text-gray-500">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="marketingEmails" className="text-white font-medium">Marketing Emails</Label>
+                <p className="text-sm text-gray-400">
                   Receive promotional emails and newsletters
                 </p>
               </div>
@@ -131,10 +131,10 @@ export default function AccountSettings({ profileData, onUpdate }) {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="promotionalOffers">Promotional Offers</Label>
-                <p className="text-sm text-gray-500">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="promotionalOffers" className="text-white font-medium">Promotional Offers</Label>
+                <p className="text-sm text-gray-400">
                   Get notified about special deals and discounts
                 </p>
               </div>
@@ -145,26 +145,26 @@ export default function AccountSettings({ profileData, onUpdate }) {
               />
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Privacy Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
+      <div className="card-dark">
+        <div className="p-6 border-b border-[#1A2332]">
+          <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+            <Shield className="h-6 w-6 text-[#de2529]" />
             Privacy & Security
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p className="text-gray-400">
             Manage your privacy settings and account security
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="dataSharing">Data Sharing</Label>
-                <p className="text-sm text-gray-500">
+          </p>
+        </div>
+        <div className="p-6 space-y-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="dataSharing" className="text-white font-medium">Data Sharing</Label>
+                <p className="text-sm text-gray-400">
                   Allow sharing of anonymized data for analytics
                 </p>
               </div>
@@ -175,10 +175,10 @@ export default function AccountSettings({ profileData, onUpdate }) {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="twoFactorEnabled">Two-Factor Authentication</Label>
-                <p className="text-sm text-gray-500">
+            <div className="flex items-center justify-between p-4 bg-[#1A2332] rounded-lg border border-[#2A3441]">
+              <div className="space-y-1">
+                <Label htmlFor="twoFactorEnabled" className="text-white font-medium">Two-Factor Authentication</Label>
+                <p className="text-sm text-gray-400">
                   Add an extra layer of security to your account
                 </p>
               </div>
@@ -190,34 +190,34 @@ export default function AccountSettings({ profileData, onUpdate }) {
             </div>
           </div>
 
-          <div className="pt-4 border-t">
+          <div className="pt-6 border-t border-[#1A2332]">
             <Button variant="outline" className="w-full">
               Change Password
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Regional Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
+      <div className="card-dark">
+        <div className="p-6 border-b border-[#1A2332]">
+          <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+            <Globe className="h-6 w-6 text-[#de2529]" />
             Regional Settings
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p className="text-gray-400">
             Set your language, currency, and timezone preferences
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          </p>
+        </div>
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="language">Language</Label>
+              <Label htmlFor="language" className="text-gray-300">Language</Label>
               <select
                 id="language"
                 value={preferences.language}
                 onChange={(e) => handlePreferenceChange('language', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-[#1A2332] bg-[#0F1420] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#de2529] focus:border-[#de2529] transition-all duration-200"
               >
                 <option value="en">English</option>
                 <option value="hi">Hindi</option>
@@ -227,12 +227,12 @@ export default function AccountSettings({ profileData, onUpdate }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="currency">Currency</Label>
+              <Label htmlFor="currency" className="text-gray-300">Currency</Label>
               <select
                 id="currency"
                 value={preferences.currency}
                 onChange={(e) => handlePreferenceChange('currency', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-[#1A2332] bg-[#0F1420] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#de2529] focus:border-[#de2529] transition-all duration-200"
               >
                 <option value="INR">Indian Rupee (₹)</option>
                 <option value="USD">US Dollar ($)</option>
@@ -242,12 +242,12 @@ export default function AccountSettings({ profileData, onUpdate }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
+              <Label htmlFor="timezone" className="text-gray-300">Timezone</Label>
               <select
                 id="timezone"
                 value={preferences.timezone}
                 onChange={(e) => handlePreferenceChange('timezone', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-[#1A2332] bg-[#0F1420] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#de2529] focus:border-[#de2529] transition-all duration-200"
               >
                 <option value="Asia/Kolkata">Asia/Kolkata</option>
                 <option value="America/New_York">America/New_York</option>
@@ -256,15 +256,15 @@ export default function AccountSettings({ profileData, onUpdate }) {
               </select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Save Button */}
       <div className="flex justify-end">
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 px-8 py-3"
         >
           {saving ? (
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

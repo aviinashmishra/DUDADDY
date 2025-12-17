@@ -1,13 +1,14 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Camera, Upload, X, User } from 'lucide-react'
+import { Camera, Upload, X, User, ImageIcon, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'react-hot-toast'
 
 export default function ProfilePictureUpload({ currentImage, onImageUpdate }) {
   const [uploading, setUploading] = useState(false)
   const [previewImage, setPreviewImage] = useState(currentImage)
+  const [showOptions, setShowOptions] = useState(false)
   const fileInputRef = useRef(null)
 
   const handleFileSelect = (event) => {
@@ -36,6 +37,7 @@ export default function ProfilePictureUpload({ currentImage, onImageUpdate }) {
 
       // Upload file
       uploadProfilePicture(file)
+      setShowOptions(false)
     }
   }
 
@@ -72,6 +74,7 @@ export default function ProfilePictureUpload({ currentImage, onImageUpdate }) {
 
   const removeProfilePicture = async () => {
     setUploading(true)
+    setShowOptions(false)
     
     try {
       const response = await fetch('/api/profile/picture', {
@@ -97,52 +100,104 @@ export default function ProfilePictureUpload({ currentImage, onImageUpdate }) {
 
   const triggerFileInput = () => {
     fileInputRef.current?.click()
+    setShowOptions(false)
   }
 
   return (
-    <div className="relative group">
+    <div className="relative">
       {/* Profile Picture Display */}
-      <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
-        {previewImage ? (
-          <img
-            src={previewImage}
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-300">
-            <User className="w-8 h-8 sm:w-12 sm:h-12 text-gray-500" />
+      <div className="relative group">
+        <div className="relative w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden bg-[#1A2332] border-4 border-[#de2529] shadow-2xl shadow-red-500/20">
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#1A2332] to-[#0F1420]">
+              <User className="w-12 h-12 lg:w-16 lg:h-16 text-gray-500" />
+            </div>
+          )}
+          
+          {/* Upload Overlay */}
+          <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer"
+               onClick={() => setShowOptions(!showOptions)}>
+            <div className="text-center">
+              <Camera className="w-8 h-8 text-white mx-auto mb-2" />
+              <p className="text-white text-sm font-medium">Change Photo</p>
+            </div>
           </div>
-        )}
-        
-        {/* Upload Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <Camera className="w-6 h-6 text-white" />
+
+          {/* Loading Overlay */}
+          {uploading && (
+            <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#de2529] mx-auto mb-2"></div>
+                <p className="text-white text-sm">Uploading...</p>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Camera Icon Button */}
+        <button
+          onClick={() => setShowOptions(!showOptions)}
+          disabled={uploading}
+          className="absolute -bottom-2 -right-2 bg-gradient-to-r from-[#de2529] to-[#ff3b3f] hover:shadow-lg hover:shadow-red-500/50 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Camera className="w-5 h-5" />
+        </button>
       </div>
 
-      {/* Upload Button */}
-      <button
-        onClick={triggerFileInput}
-        disabled={uploading}
-        className="absolute -bottom-2 -right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {uploading ? (
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-        ) : (
-          <Upload className="w-4 h-4" />
-        )}
-      </button>
-
-      {/* Remove Button (only show if there's a custom image) */}
-      {previewImage && !previewImage.includes('ui-avatars.com') && (
-        <button
-          onClick={removeProfilePicture}
-          disabled={uploading}
-          className="absolute -top-2 -right-2 bg-gray-600 hover:bg-gray-700 text-white p-1 rounded-full shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <X className="w-3 h-3" />
-        </button>
+      {/* Options Menu */}
+      {showOptions && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setShowOptions(false)}
+          ></div>
+          
+          {/* Options Panel */}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 z-50 bg-[#0F1420] border border-[#1A2332] rounded-xl shadow-2xl shadow-black/50 p-2 min-w-[200px]">
+            <div className="space-y-1">
+              <button
+                onClick={triggerFileInput}
+                disabled={uploading}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-300 hover:bg-[#1A2332] hover:text-white rounded-lg transition-all duration-200 disabled:opacity-50"
+              >
+                <Upload className="w-5 h-5 text-[#de2529]" />
+                <div>
+                  <p className="font-medium">Upload Photo</p>
+                  <p className="text-xs text-gray-500">Choose from device</p>
+                </div>
+              </button>
+              
+              {previewImage && !previewImage.includes('ui-avatars.com') && (
+                <button
+                  onClick={removeProfilePicture}
+                  disabled={uploading}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-300 hover:bg-[#1A2332] hover:text-red-400 rounded-lg transition-all duration-200 disabled:opacity-50"
+                >
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                  <div>
+                    <p className="font-medium">Remove Photo</p>
+                    <p className="text-xs text-gray-500">Use default avatar</p>
+                  </div>
+                </button>
+              )}
+            </div>
+            
+            {/* Upload Guidelines */}
+            <div className="border-t border-[#1A2332] mt-2 pt-2 px-2">
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <ImageIcon className="w-3 h-3" />
+                <span>Max 5MB • JPG, PNG, WebP</span>
+              </div>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Hidden File Input */}
@@ -153,16 +208,6 @@ export default function ProfilePictureUpload({ currentImage, onImageUpdate }) {
         onChange={handleFileSelect}
         className="hidden"
       />
-
-      {/* Upload Instructions */}
-      <div className="mt-2 text-center">
-        <p className="text-xs text-gray-500">
-          Click to upload
-        </p>
-        <p className="text-xs text-gray-400">
-          Max 5MB • JPG, PNG, WebP
-        </p>
-      </div>
     </div>
   )
 }

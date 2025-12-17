@@ -32,15 +32,48 @@ export default function ProfilePage() {
 
   const fetchProfileData = async () => {
     try {
+      console.log('Fetching profile data...')
       const response = await fetch('/api/profile')
+      console.log('Profile response status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
+        console.log('Profile data received:', data)
         setProfileData(data)
       } else {
-        console.error('Failed to fetch profile data')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Failed to fetch profile data:', response.status, errorData)
+        
+        // Create a basic profile structure if API fails
+        setProfileData({
+          user: {
+            id: session?.user?.id || 'temp-id',
+            name: session?.user?.name || 'User',
+            email: session?.user?.email || '',
+            image: session?.user?.image || null,
+            createdAt: new Date().toISOString(),
+            role: 'user'
+          },
+          profile: null,
+          preferences: null
+        })
       }
     } catch (error) {
       console.error('Error fetching profile:', error)
+      
+      // Create a basic profile structure if API fails
+      setProfileData({
+        user: {
+          id: session?.user?.id || 'temp-id',
+          name: session?.user?.name || 'User',
+          email: session?.user?.email || '',
+          image: session?.user?.image || null,
+          createdAt: new Date().toISOString(),
+          role: 'user'
+        },
+        profile: null,
+        preferences: null
+      })
     } finally {
       setLoading(false)
     }

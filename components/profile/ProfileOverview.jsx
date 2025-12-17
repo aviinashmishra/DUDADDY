@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Edit, Save, X, User, Mail, Phone, Calendar, FileText } from 'lucide-react'
+import { Edit, Save, X, User, Mail, Phone, Calendar, FileText, Settings } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
 export default function ProfileOverview({ profileData, onUpdate }) {
@@ -20,6 +20,20 @@ export default function ProfileOverview({ profileData, onUpdate }) {
       new Date(profileData.profile.dateOfBirth).toISOString().split('T')[0] : '',
     bio: profileData?.profile?.bio || '',
   })
+
+  // Update form data when profileData changes
+  useEffect(() => {
+    if (profileData) {
+      setFormData({
+        firstName: profileData?.profile?.firstName || '',
+        lastName: profileData?.profile?.lastName || '',
+        phone: profileData?.profile?.phone || '',
+        dateOfBirth: profileData?.profile?.dateOfBirth ? 
+          new Date(profileData.profile.dateOfBirth).toISOString().split('T')[0] : '',
+        bio: profileData?.profile?.bio || '',
+      })
+    }
+  }, [profileData])
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
